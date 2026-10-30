@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>あなたの血糖タイプ診断</title>
+<meta name="description" content="血糖値は「糖が多いか少ないか」だけでなく、体がエネルギーをどう作って、どう使っているかのサインです。8つの質問で、あなたの体がどこでつまずきやすいかのタイプと、今日からできる一歩が分かります。">
+<style>
+:root{--c:#dc7c37;--c2:#a55d29;--t:#fdf3eb;--s:#f9e0ce;--ink:#1f2328;--sub:#5b6168;--line:#e3e5e8;--bg:#f6f7f8}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:linear-gradient(180deg,var(--t),var(--bg) 320px);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic UI","Meiryo",sans-serif;line-height:1.8;-webkit-text-size-adjust:100%;min-height:100vh}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 36px}
+.card{background:#fff;border-radius:18px;box-shadow:0 2px 16px rgba(0,0,0,.07);padding:28px 20px 30px}
+h1,h2,h3{line-height:1.45;margin:0;outline:none}
+.kicker{display:inline-block;background:var(--t);color:var(--c2);font-weight:700;font-size:13px;border-radius:999px;padding:3px 12px;margin:0 0 10px}
+.title{font-size:25px;font-weight:800;letter-spacing:.01em}
+.lead{margin:14px 0 0;font-size:16px;color:var(--ink)}
+.pts{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:8px}
+.pts li{background:var(--t);border-radius:10px;padding:9px 12px 9px 36px;position:relative;font-size:15px}
+.pts li:before{content:"";position:absolute;left:14px;top:17px;width:10px;height:10px;border-radius:50%;background:var(--c)}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:16px 18px;font-size:17px;font-weight:800;text-align:center;text-decoration:none;cursor:pointer;margin:22px 0 0;font-family:inherit;line-height:1.5}
+.btn.main{background:var(--c);color:#fff;box-shadow:0 4px 0 var(--c2)}
+.btn.main:active{transform:translateY(2px);box-shadow:0 2px 0 var(--c2)}
+.btn.sub{background:#fff;color:var(--c2);border:2px solid var(--s);margin-top:12px;font-size:15px;padding:12px}
+.note{margin:18px 0 0;font-size:13px;color:var(--sub)}
+.prog{display:flex;align-items:center;gap:10px;margin:0 0 18px}
+.prog-t{font-size:13px;font-weight:700;color:var(--c2);white-space:nowrap}
+.bar{flex:1;height:8px;background:var(--line);border-radius:999px;overflow:hidden}
+.fill{height:100%;background:var(--c);border-radius:999px}
+.qt{font-size:20px;font-weight:800}
+.opts{display:grid;gap:10px;margin:18px 0 0}
+.opt{width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-radius:12px;padding:14px 16px;font-size:16px;font-family:inherit;color:var(--ink);cursor:pointer;line-height:1.6}
+.opt:hover,.opt:focus-visible{border-color:var(--c);background:var(--t);outline:none}
+.back{background:none;border:0;color:var(--sub);font-size:14px;margin:16px 0 0;padding:6px 0;cursor:pointer;font-family:inherit}
+.checks{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:8px}
+.checks label{display:flex;gap:12px;align-items:flex-start;border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:16px}
+.checks input{width:22px;height:22px;flex:0 0 22px;margin:3px 0 0;accent-color:var(--c)}
+.checks label.on{border-color:var(--c);background:var(--t)}
+.count{margin:14px 0 0;font-weight:700;color:var(--c2);text-align:right}
+.form{display:grid;gap:16px;margin:18px 0 0}
+.field label{display:block;font-weight:700;font-size:15px;margin:0 0 6px}
+.field .hint{display:block;font-weight:400;font-size:13px;color:var(--sub)}
+.inrow{display:flex;align-items:center;gap:8px}
+.inrow input,.inrow select{flex:1;min-width:0;font-size:17px;padding:12px;border:2px solid var(--line);border-radius:10px;font-family:inherit;background:#fff;color:var(--ink)}
+.inrow input:focus,.inrow select:focus{border-color:var(--c);outline:none}
+.unit{color:var(--sub);font-size:15px;white-space:nowrap}
+.date{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px}
+.err{color:#b42318;font-weight:700;font-size:14px;margin:12px 0 0;min-height:1em}
+.res-k{margin:0 0 4px;font-size:14px;font-weight:700;color:var(--c2)}
+.res-name{font-size:26px;font-weight:800;color:var(--ink)}
+.res-catch{margin:12px 0 0;font-size:17px;font-weight:700;background:var(--t);border-left:5px solid var(--c);padding:10px 14px;border-radius:0 10px 10px 0}
+.res-body{margin:14px 0 0;font-size:16px}
+.res-h{margin:22px 0 8px;font-size:17px;font-weight:800}
+.res-pts{margin:0;padding:0 0 0 1.3em}
+.res-pts li{margin:4px 0}
+.nums{display:grid;gap:10px;margin:14px 0 0}
+.num{background:var(--t);border-radius:12px;padding:12px 14px}
+.num-l{display:block;font-size:14px;color:var(--sub);font-weight:700}
+.num-v{font-size:28px;font-weight:800;color:var(--c2)}
+.num-u{font-size:15px;font-weight:700;margin-left:4px}
+.score{margin:10px 0 0;font-size:15px;color:var(--sub);font-weight:700}
+.cta{margin:26px 0 0;border:2px solid var(--c);border-radius:16px;padding:18px 16px;background:linear-gradient(180deg,#fff,var(--t))}
+.cta-lead{margin:0;font-weight:700;font-size:16px}
+.cta .btn{margin-top:14px}
+.kw{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 0;background:#fff;border:1px dashed var(--c);border-radius:10px;padding:10px 12px}
+.kw-l{font-size:13px;color:var(--sub);font-weight:700}
+.kw-v{font-size:19px;color:var(--c2)}
+.kw-cp{margin-left:auto;background:var(--c);color:#fff;border:0;border-radius:8px;padding:6px 12px;font-weight:700;cursor:pointer;font-family:inherit}
+.foot{font-size:12px;color:var(--sub);text-align:center;margin:18px 0 0;line-height:1.7}
+@media (min-width:560px){.card{padding:36px 34px 38px}.title{font-size:29px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<main id="app" class="card" aria-live="polite"><noscript>このツールを使うには、ブラウザの JavaScript を有効にしてください。</noscript></main>
+<footer class="foot">回答はこの画面の中だけで使われ、どこにも送られません。</footer>
+</div>
+<script type="application/json" id="tool-data">{"type":"diagnosis","title":"あなたの血糖タイプ診断","kicker":"8つの質問・約1分","lead":"血糖値は「糖が多いか少ないか」だけでなく、体がエネルギーをどう作って、どう使っているかのサインです。8つの質問で、あなたの体がどこでつまずきやすいかのタイプと、今日からできる一歩が分かります。","intro_points":["ふだんの自分に近いものを、直感で選んでください","結果は4つのタイプのどれかで出ます"],"color":"#E8833A","start_label":"診断をはじめる","note":"この診断は、食事や体の傾向をつかむための目安です。病気を診断するものではありません。お薬を使っている方、通院中の方は、食事やお薬を変える前に必ず主治医に相談してください。","result_label":"あなたの血糖タイプは","points_label":"今日からできる一歩","cta":{"lead":"{結果}の人に向けた、くわしい解説と食べ方のポイントを公式LINEでお送りしています。LINEで下の合言葉を送ってくださいね。","button":"公式LINEで解説を受け取る","url":"https://lin.ee/WmHUvZH","keyword_label":"LINEで送る合言葉"},"share_text":"血糖タイプ診断をやってみたら「{結果}」でした。","results":[{"id":"A","name":"糖質ガマン・ガス欠タイプ","keyword":"ガス欠","catch":"真面目に糖質を減らしてきたぶん、体のエネルギーが足りなくなっているかもしれません。","body":"血糖値を下げたい一心で、ご飯や甘いものをしっかり我慢してきたタイプです。その頑張りは本物です。\nただ、糖は体にとっていちばん使いやすいエネルギーの材料です。減らしすぎると体はガス欠になり、疲れやすい・力が出ない・眠りが浅いといったサインが出やすくなります。まずは「減らす」より「必要な分をとる」ことから見直していきましょう。","points":["ご飯を抜かず、毎食お茶碗に軽く1杯を目安に戻してみる","甘いもの＝悪、と決めつけず、果物やあんこのような身近な糖から少しずつ","数字だけでなく、疲れにくさ・眠り・体の温かさの変化もメモする"]},{"id":"B","name":"血糖ジェットコースタータイプ","keyword":"ジェット","catch":"上がっては下がる、の波に体が振り回されやすいタイプです。","body":"食後に急に眠くなったり、時間が空くとイライラ・ふらつきが出たり、甘いものに手が止まらなくなったり。血糖値が大きく上がっては下がる波に乗りやすいタイプです。\n高血糖と低血糖は真逆に見えますが、根っこは同じで「食べた糖を上手に使い切れていない」サインです。食事のリズムを整えて、波を小さくすることから始めましょう。","points":["食事を抜かず、1日3食を同じくらいの時間にそろえる","お腹がすききる前に、決めた間食を1回入れてみる","食後に眠くなった日・ならなかった日を、ひと言メモする"]},{"id":"C","name":"冷え・消化おつかれタイプ","keyword":"ぽかぽか","catch":"食べ物を選ぶ前に、食べたものを受け止める体を温めたいタイプです。","body":"朝の体温が低い、手足が冷たい、食べたあとにお腹が張る・胃が重い。そんなサインが出やすいタイプです。\n消化を進める酵素には、働きやすい温度があります。体が冷えたままだと、体にいいものを食べても、それをうまく受け止めきれません。「何を食べるか」の前に「食べたものを処理できる体か」を整えていきましょう。","points":["朝起きたら体温を測って、1週間分を書き留める","冷たいスムージーや大量の生野菜は、いったん温かい汁物や煮物に置き換える","食後に体が冷える・お腹が張る食べ物がないか、メモしてみる"]},{"id":"D","name":"健康法がんばりすぎタイプ","keyword":"引き算","catch":"体にいいことを足し続けて、体が追いつけていないかもしれません。","body":"タンパク質、いい油、サプリ、発酵食品、減塩…。体にいいと聞いたことを、次々に取り入れてきた勉強熱心なタイプです。\nただ、足したものを使いこなすには、消化して、吸収して、処理する力が必要です。足し算が続くと、体の負担が増えて変化を感じにくくなることも。新しく足す前に、今やっていることを見直す「引き算」から始めましょう。","points":["今続けている健康法・サプリを、紙に全部書き出してみる","その中から、理由をはっきり説明できないものを1つ休んでみる","新しく何かを足すのは、体の反応を見てから1つずつにする"]}],"questions":[{"q":"ふだんの朝ごはんに、いちばん近いのは？","options":[{"label":"ご飯やパンは控えめ、または食べない","add":{"A":3}},{"label":"食べる日と食べない日がある・急いで済ませる","add":{"B":3}},{"label":"サラダやスムージー、ヨーグルトなど冷たいもの","add":{"C":3,"D":1}},{"label":"プロテインや卵、サプリなど体にいいものを足す","add":{"D":3}}]},{"q":"食事のあと1〜2時間、体はどんな感じ？","options":[{"label":"物足りなくて、なんとなく力が出ない","add":{"A":3,"B":1}},{"label":"急に眠くなったり、だるくなったりする","add":{"B":3}},{"label":"お腹が張る、胃が重い、体が冷える","add":{"C":3}},{"label":"とくに困らないけど、これで合っているか不安","add":{"D":3}}]},{"q":"甘いものとの付き合い方に近いのは？","options":[{"label":"なるべく我慢。食べたら罪悪感がある","add":{"A":3}},{"label":"食べ始めると手が止まらないことがある","add":{"B":3}},{"label":"冷たいアイスより、温かい飲み物でほっとしたい","add":{"C":3}},{"label":"食べるなら、体にいいと聞いたものを選ぶ","add":{"D":3,"A":1}}]},{"q":"最近の体で、いちばん気になることは？","options":[{"label":"体重は落ちたのに、疲れやすくなった","add":{"A":3}},{"label":"食事の間が空くと、イライラやふらつきが出る","add":{"B":3}},{"label":"手足が冷たい・朝の体温が低い","add":{"C":3}},{"label":"いろいろ試しているのに、変化を感じにくい","add":{"D":3}}]},{"q":"ふだんの眠りに近いのは？","options":[{"label":"夜中に目が覚めやすく、眠りが浅い","add":{"A":3,"C":1}},{"label":"夕食後にうとうと。朝はなかなか起きられない","add":{"B":3}},{"label":"体が冷えて、寝つくまでに時間がかかる","add":{"C":3}},{"label":"睡眠のために、寝る前の習慣をいくつも続けている","add":{"D":3}}]},{"q":"1日の食事のとり方に近いのは？","options":[{"label":"量を意識して、少なめにしている","add":{"A":3}},{"label":"食べる時間がバラバラで、抜くこともある","add":{"B":3}},{"label":"少し食べただけで、すぐお腹いっぱいになる","add":{"C":3,"A":1}},{"label":"「これは食べない」というルールがたくさんある","add":{"D":3,"A":1}}]},{"q":"健康の情報を見た時、どうすることが多い？","options":[{"label":"糖質を減らすコツを、つい探してしまう","add":{"A":3}},{"label":"気になっても、忙しくて続かない","add":{"B":3}},{"label":"体を温める工夫や、温かい料理の話が気になる","add":{"C":3}},{"label":"よさそうなものは、すぐに試してみる","add":{"D":3,"B":1}}]},{"q":"血糖値やHbA1cの数字を見た時の気持ちは？","options":[{"label":"もっと減らさなきゃ、と焦る","add":{"A":3}},{"label":"日によって上下が大きくて、振り回される","add":{"B":3}},{"label":"数字より、だるさや冷えのほうがつらい","add":{"C":3}},{"label":"こんなに頑張っているのに、と思う","add":{"D":3,"A":1}}]}]}</script>
+<script>
+(function(){
+var D=JSON.parse(document.getElementById('tool-data').textContent);
+var F={};
+var app=document.getElementById('app');
+var ans=[];
+function N(x){return Number(Number(x).toPrecision(12));}
+function R(x,n){var k=Math.pow(10,n||0);return Math.floor(N(x*k)+0.5)/k;}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+function show(n){app.innerHTML='';app.appendChild(n);try{window.scrollTo(0,0);}catch(e){}var h=n.querySelector('h1,h2');if(h){h.setAttribute('tabindex','-1');try{h.focus({preventScroll:true});}catch(e){}}}
+function fill(t,r){var kw=(r&&r.keyword)||(D.cta&&D.cta.keyword)||'';return String(t).split('{結果}').join(r?r.name:'').split('{合言葉}').join(kw);}
+function copy(t,b){var o=b.textContent;var done=function(){b.textContent='コピーしました';setTimeout(function(){b.textContent=o;},1800);};
+ if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done,function(){fb(t,done);});}else{fb(t,done);}}
+function fb(t,done){var a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();done();}
+function start(){
+ var s=el('section','scr start');
+ if(D.kicker)s.appendChild(el('p','kicker',D.kicker));
+ s.appendChild(el('h1','title',D.title));
+ if(D.lead)s.appendChild(el('p','lead',D.lead));
+ if(D.intro_points&&D.intro_points.length){var ul=el('ul','pts');D.intro_points.forEach(function(t){ul.appendChild(el('li',null,t));});s.appendChild(ul);}
+ var b=el('button','btn main',D.start_label||'はじめる');b.type='button';b.onclick=begin;s.appendChild(b);
+ if(D.note)s.appendChild(el('p','note',D.note));
+ show(s);
+}
+function begin(){ans=[];
+ if(D.type==='diagnosis'||(D.type==='score'&&D.style!=='check'))return q(0);
+ if(D.type==='score')return checks();
+ if(D.type==='calculator')return calc();
+ if(D.type==='fortune')return fortune();
+}
+function q(i){
+ var Q=D.questions,s=el('section','scr q');
+ var pr=el('div','prog');pr.appendChild(el('span','prog-t',(i+1)+' / '+Q.length));var bar=el('div','bar'),f=el('div','fill');f.style.width=(i/Q.length*100)+'%';bar.appendChild(f);pr.appendChild(bar);s.appendChild(pr);
+ s.appendChild(el('h2','qt',Q[i].q));
+ var box=el('div','opts');
+ Q[i].options.forEach(function(o,k){var b=el('button','opt',o.label);b.type='button';b.onclick=function(){ans[i]=k;if(i+1<Q.length)q(i+1);else finish();};box.appendChild(b);});
+ s.appendChild(box);
+ if(i>0){var bk=el('button','back','← ひとつ前に戻る');bk.type='button';bk.onclick=function(){q(i-1);};s.appendChild(bk);}
+ show(s);
+}
+function finish(){
+ if(D.type==='diagnosis'){
+  var tot={};D.results.forEach(function(r){tot[r.id]=0;});
+  D.questions.forEach(function(qq,i){var add=qq.options[ans[i]].add||{};Object.keys(add).forEach(function(k){tot[k]+=add[k];});});
+  var best=D.results[0];D.results.forEach(function(r){if(tot[r.id]>tot[best.id])best=r;});
+  return result(best);
+ }
+ var sum=0;D.questions.forEach(function(qq,i){sum+=qq.options[ans[i]].score||0;});
+ return result(level(sum),function(s){scoreLine(s,sum);});
+}
+function level(v){for(var i=0;i<D.levels.length;i++){var L=D.levels[i];if((L.min==null||v>=L.min)&&(L.max==null||v<=L.max))return L;}return D.levels[D.levels.length-1];}
+function scoreLine(s,sum){if(D.show_score===false)return;var mx=D.max_score;s.appendChild(el('p','score',(D.score_label||'あなたの点数')+'：'+sum+(mx!=null?' / '+mx:'')+'点'));}
+function checks(){
+ var s=el('section','scr chk');
+ s.appendChild(el('h2','qt',D.check_title||'当てはまるものに、すべてチェックしてください'));
+ var ul=el('ul','checks'),cnt=el('p','count','0 個チェック');
+ D.items.forEach(function(it,i){var li=el('li'),lb=el('label'),cb=el('input');cb.type='checkbox';cb.onchange=function(){lb.className=cb.checked?'on':'';var n=ul.querySelectorAll('input:checked').length;cnt.textContent=n+' 個チェック';};lb.appendChild(cb);lb.appendChild(el('span',null,it.text));li.appendChild(lb);ul.appendChild(li);});
+ s.appendChild(ul);s.appendChild(cnt);
+ var b=el('button','btn main',D.submit_label||'結果を見る');b.type='button';
+ b.onclick=function(){var sum=0;ul.querySelectorAll('input').forEach(function(cb,i){if(cb.checked)sum+=(D.items[i].score==null?1:D.items[i].score);});result(level(sum),function(x){scoreLine(x,sum);});};
+ s.appendChild(b);show(s);
+}
+function calc(){
+ var s=el('section','scr calc');
+ s.appendChild(el('h2','qt',D.form_title||'数字を入れてください'));
+ var fm=el('div','form'),err=el('p','err');
+ D.inputs.forEach(function(it){var f=el('div','field'),lb=el('label',null,it.label);var id='in-'+it.id;lb.htmlFor=id;if(it.hint)lb.appendChild(el('span','hint',it.hint));f.appendChild(lb);var row=el('div','inrow'),inp;
+  if(it.kind==='select'){inp=el('select');it.options.forEach(function(o,k){var op=el('option',null,o.label);op.value=k;inp.appendChild(op);});if(it.default!=null)inp.value=String(it.default);}
+  else{inp=el('input');inp.type='number';inp.inputMode='decimal';if(it.min!=null)inp.min=it.min;if(it.max!=null)inp.max=it.max;inp.step=it.step||'any';if(it.default!=null)inp.value=it.default;if(it.placeholder)inp.placeholder=it.placeholder;}
+  inp.id=id;row.appendChild(inp);if(it.unit)row.appendChild(el('span','unit',it.unit));f.appendChild(row);fm.appendChild(f);});
+ s.appendChild(fm);s.appendChild(err);
+ var b=el('button','btn main',D.submit_label||'計算する');b.type='button';
+ b.onclick=function(){var v={};for(var i=0;i<D.inputs.length;i++){var it=D.inputs[i],e=document.getElementById('in-'+it.id);
+   if(it.kind==='select'){v[it.id]=Number(it.options[Number(e.value)].value);continue;}
+   if(e.value===''){err.textContent=it.label+'を入れてください';e.focus();return;}
+   var x=Number(e.value);if(!isFinite(x)){err.textContent=it.label+'は数字で入れてください';e.focus();return;}
+   if((it.min!=null&&x<it.min)||(it.max!=null&&x>it.max)){err.textContent=it.label+'は '+Number(it.min).toLocaleString('ja-JP')+'〜'+Number(it.max).toLocaleString('ja-JP')+(it.unit||'')+' の間で入れてください';e.focus();return;}
+   v[it.id]=x;}
+  var out=[];for(var j=0;j<D.outputs.length;j++){var o=D.outputs[j];var y=F[o.id](v);v[o.id]=y;out.push([o,y]);}
+  if(D.show_order){out.sort(function(a,b){var i=D.show_order.indexOf(a[0].id),k=D.show_order.indexOf(b[0].id);return (i<0?99:i)-(k<0?99:k);});}
+  var lv=D.levels&&D.levels.of!=null?D.levels:null;var r=lv?pick(lv.items,v[lv.of]):(D.result||{name:D.result_name||'計算の結果'});
+  result(r,function(x){var box=el('div','nums');out.forEach(function(p){if(p[0].hidden)return;var n=el('div','num');n.appendChild(el('span','num-l',p[0].label));var val=isFinite(p[1])?Number(p[1]).toLocaleString('ja-JP',{maximumFractionDigits:p[0].digits==null?1:p[0].digits,minimumFractionDigits:p[0].digits_fixed?p[0].digits:0}):'—';n.appendChild(el('span','num-v',val));if(p[0].unit)n.appendChild(el('span','num-u',p[0].unit));box.appendChild(n);});x.appendChild(box);},true);
+ };
+ s.appendChild(b);show(s);
+}
+function pick(items,v){for(var i=0;i<items.length;i++){var L=items[i];if((L.min==null||v>=L.min)&&(L.max==null||v<L.max))return L;}return items[items.length-1];}
+function fortune(){
+ var s=el('section','scr ft');
+ s.appendChild(el('h2','qt',D.form_title||'生年月日を入れてください'));
+ var fm=el('div','form'),err=el('p','err'),nm=null;
+ if(D.ask_name){var f0=el('div','field'),l0=el('label',null,D.name_label||'お名前（ニックネームでも大丈夫です）');l0.htmlFor='in-name';f0.appendChild(l0);var r0=el('div','inrow');nm=el('input');nm.id='in-name';nm.type='text';nm.maxLength=20;r0.appendChild(nm);f0.appendChild(r0);fm.appendChild(f0);}
+ var f1=el('div','field'),l1=el('label',null,'生年月日');l1.htmlFor='in-y';f1.appendChild(l1);var dt=el('div','date');
+ function sel(id,a,b,u,rev){var w=el('div','inrow'),sl=el('select');sl.id=id;var o0=el('option',null,'--');o0.value='';sl.appendChild(o0);var arr=[];for(var i=a;i<=b;i++)arr.push(i);if(rev)arr.reverse();arr.forEach(function(i){var o=el('option',null,String(i));o.value=i;sl.appendChild(o);});w.appendChild(sl);w.appendChild(el('span','unit',u));dt.appendChild(w);return sl;}
+ var yy=sel('in-y',1920,new Date().getFullYear(),'年',true),mm=sel('in-m',1,12,'月'),dd=sel('in-d',1,31,'日');
+ f1.appendChild(dt);fm.appendChild(f1);s.appendChild(fm);s.appendChild(err);
+ var b=el('button','btn main',D.submit_label||'結果を見る');b.type='button';
+ b.onclick=function(){var y=+yy.value,m=+mm.value,d=+dd.value;if(!y||!m||!d){err.textContent='生年月日を選んでください';return;}
+  var t=new Date(y,m-1,d);if(t.getFullYear()!==y||t.getMonth()!==m-1||t.getDate()!==d){err.textContent='その日付はありません。もう一度選んでください';return;}
+  var key=fkey(y,m,d),r=D.results[key];var who=nm&&nm.value.trim()?nm.value.trim()+'さんの結果':null;
+  result(r,function(x){if(D.key_label)x.appendChild(el('p','score',D.key_label.split('{key}').join(key)));},false,who);};
+ s.appendChild(b);show(s);
+}
+function fkey(y,m,d){
+ if(D.method==='month')return String(m);
+ if(D.method==='zodiac'){var Z=[[1, 20, "みずがめ座"], [2, 19, "うお座"], [3, 21, "おひつじ座"], [4, 20, "おうし座"], [5, 21, "ふたご座"], [6, 22, "かに座"], [7, 23, "しし座"], [8, 23, "おとめ座"], [9, 23, "てんびん座"], [10, 24, "さそり座"], [11, 23, "いて座"], [12, 22, "やぎ座"]],n='やぎ座';Z.forEach(function(z){if(m>z[0]||(m===z[0]&&d>=z[1]))n=z[2];});return n;}
+ var keep=!!(D.results['11']||D.results['22']||D.results['33']);var s=String(y)+(m<10?'0':'')+m+(d<10?'0':'')+d;var t=0;s.split('').forEach(function(c){t+=+c;});
+ while(t>9&&!(keep&&(t===11||t===22||t===33))){var u=0;String(t).split('').forEach(function(c){u+=+c;});t=u;}return String(t);
+}
+function result(r,extra,numsFirst,who){
+ var s=el('section','scr res');
+ s.appendChild(el('p','res-k',who||D.result_label||'あなたの結果'));
+ s.appendChild(el('h2','res-name',r.name));
+ if(extra)extra(s);
+ if(r.catch)s.appendChild(el('p','res-catch',r.catch));
+ if(r.body)String(r.body).split('\n').forEach(function(p){if(p.trim())s.appendChild(el('p','res-body',p));});
+ if(r.points&&r.points.length){s.appendChild(el('h3','res-h',D.points_label||'次の一歩'));var ul=el('ul','res-pts');r.points.forEach(function(t){ul.appendChild(el('li',null,t));});s.appendChild(ul);}
+ var c=D.cta;if(c&&(c.url||c.keyword||r.keyword)){var bx=el('div','cta');if(c.lead)bx.appendChild(el('p','cta-lead',fill(c.lead,r)));var kw=r.keyword||c.keyword;
+  if(kw){var k=el('div','kw');k.appendChild(el('span','kw-l',c.keyword_label||'合言葉'));k.appendChild(el('strong','kw-v',kw));var cp=el('button','kw-cp','コピー');cp.type='button';cp.onclick=function(){copy(kw,cp);};k.appendChild(cp);bx.appendChild(k);}
+  if(c.url){var a=el('a','btn main',fill(c.button||'くわしく見る',r));a.href=c.url;a.target='_blank';a.rel='noopener';bx.appendChild(a);}
+  s.appendChild(bx);}
+ if(D.share_text){var t=fill(D.share_text,r);var sb=el('button','btn sub','結果の文をコピー');sb.type='button';sb.onclick=function(){copy(t,sb);};s.appendChild(sb);}
+ var ag=el('button','btn sub',D.retry_label||'もう一度やる');ag.type='button';ag.onclick=start;s.appendChild(ag);
+ if(D.note)s.appendChild(el('p','note',D.note));
+ show(s);
+}
+start();
+})();
+</script>
+</body>
+</html>
