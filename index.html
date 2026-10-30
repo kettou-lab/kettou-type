@@ -203,11 +203,12 @@ function result(r,extra,numsFirst,who){
   if(c.url){var a=el('a','btn main',fill(c.button||'くわしく見る',r));a.href=c.url;a.target='_blank';a.rel='noopener';bx.appendChild(a);}
   s.appendChild(bx);}
  if(D.share_text){var t=fill(D.share_text,r);var sb=el('button','btn sub','結果の文をコピー');sb.type='button';sb.onclick=function(){copy(t,sb);};s.appendChild(sb);}
- var ag=el('button','btn sub',D.retry_label||'もう一度やる');ag.type='button';ag.onclick=start;s.appendChild(ag);
+ var ag=el('button','btn sub',D.retry_label||'もう一度やる');ag.type='button';ag.onclick=function(){if(location.hash){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}start();};s.appendChild(ag);
  if(D.note)s.appendChild(el('p','note',D.note));
  show(s);
 }
-start();
+function direct(){var h=decodeURIComponent((location.hash||'').slice(1));if(!h||D.type!=='diagnosis')return null;for(var i=0;i<D.results.length;i++){if(D.results[i].id===h)return D.results[i];}return null;}
+var R0=direct();if(R0)result(R0);else start();
 })();
 </script>
 </body>
