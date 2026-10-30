@@ -71,6 +71,43 @@ h1,h2,h3{line-height:1.45;margin:0;outline:none}
 .res .pic{margin:6px auto 14px}
 .foot{font-size:12px;color:var(--sub);text-align:center;margin:18px 0 0;line-height:1.7}
 @media (min-width:560px){.card{padding:36px 34px 38px}.title{font-size:29px}}
+
+/* Readable introduction */
+.start{--rose:#b86162;--rose-light:#fcf0ed;color:#443c37}
+.start p{margin:0 0 22px}
+.intro-hero{text-align:center;padding:16px 0 30px;position:relative}
+.intro-hero:before{content:"";display:block;width:74px;height:74px;background:#f8e2d7;border-radius:50%;margin:0 auto 20px;box-shadow:35px -8px 0 -17px #eee4d2,-32px 15px 0 -22px #f0c9cd}
+.intro-eyebrow{font-size:12px;letter-spacing:.14em;color:#99624d;font-weight:700}
+.start .title{font-size:clamp(26px,6.4vw,36px);line-height:1.65;letter-spacing:.04em}
+.start .title em{font-style:normal;color:var(--rose)}
+.intro-section{padding:30px 0;border-top:1px solid #ede4de}
+.intro-section h2{font-size:22px;line-height:1.7;margin-bottom:22px}
+.start p,.intro-section li{font-size:16px;line-height:2}
+.worry-list{list-style:none;padding:0;margin:0 0 28px;display:grid;gap:12px}
+.worry-list li{padding:16px 16px 16px 45px;background:#faf4ef;border-radius:16px;position:relative}
+.worry-list li:before{content:"✓";position:absolute;left:15px;top:17px;border-radius:50%;background:#fff;color:var(--rose);width:22px;height:22px;line-height:22px;text-align:center;font-size:13px;font-weight:800}
+.intro-quote{background:#fcf0ed;border-radius:20px;padding:24px 20px;text-align:center;font-weight:700;color:#885150}
+.start .intro-quote p:last-child{margin:0}
+.cycle{list-style:none;margin:24px 0 30px;padding:0;counter-reset:steps}
+.cycle li{counter-increment:steps;position:relative;display:flex;align-items:center;gap:14px;background:#faf5ef;border-radius:16px;padding:16px;margin-bottom:22px;font-weight:600}
+.cycle li:before{content:counter(steps,decimal-leading-zero);display:grid;place-items:center;flex:0 0 38px;height:38px;border-radius:50%;background:#ead1bf;color:#684b3c;font-size:13px}
+.cycle li:not(:last-child):after{content:"↓";position:absolute;bottom:-25px;left:32px;color:#bd9e87}
+.cycle li:last-child{background:#f9e5e3}
+.intro-highlight{font-size:21px!important;line-height:1.9!important;font-weight:800}
+.start mark{background:linear-gradient(transparent 62%,#f6dacf 62%);color:inherit;padding:0 2px}
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:26px 0}
+.type-item{padding:22px 16px;border-radius:20px;background:#fcf0ed;font-size:15px;line-height:1.9}
+.type-item:nth-child(2){background:#f8efdc}.type-item:nth-child(3){background:#edf3ee}.type-item:nth-child(4){background:#eff1f8}
+.type-dot{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#fff;margin-bottom:12px;font-weight:800;color:#92694f;font-size:13px}
+.intro-invite{text-align:center;background:#fcf4ed;border-radius:24px;padding:30px 20px;margin-top:20px}
+.intro-invite h2{font-size:24px;line-height:1.7;margin:0 0 22px}
+.intro-perks{list-style:none;padding:0;text-align:left;margin:22px 0}
+.intro-perks li{padding:8px 0 8px 25px;position:relative;font-size:14px}
+.intro-perks li:before{content:"●";position:absolute;left:0;color:#b77555;font-size:10px}
+.start .btn.main{background:#b86e52;box-shadow:0 4px 0 #88503b;border-radius:999px}
+.start .note{font-size:12px;line-height:1.9;margin:22px 0 0;color:#77716b}
+@media(max-width:380px){.type-grid{grid-template-columns:1fr}.intro-invite{padding:25px 14px}.intro-section h2{font-size:20px}}
+
 </style>
 </head>
 <body>
@@ -96,12 +133,8 @@ function fb(t,done){var a=document.createElement('textarea');a.value=t;a.setAttr
 function pic(s,src,alt){if(!src)return;var i=el('img','pic');i.src=src;i.alt=alt||'';i.decoding='async';s.appendChild(i);}
 function start(){
  var s=el('section','scr start');
- pic(s,D.intro_image,D.title);
- if(D.kicker)s.appendChild(el('p','kicker',D.kicker));
- s.appendChild(el('h1','title',D.title));
- if(D.lead)s.appendChild(el('p','lead',D.lead));
- if(D.intro_points&&D.intro_points.length){var ul=el('ul','pts');D.intro_points.forEach(function(t){ul.appendChild(el('li',null,t));});s.appendChild(ul);}
- var b=el('button','btn main',D.start_label||'はじめる');b.type='button';b.onclick=begin;s.appendChild(b);
+ s.innerHTML="\n<header class=\"intro-hero\"><p class=\"intro-eyebrow\">あなたの血糖タイプ診断</p><h1 class=\"title\">こんな状態に<br>なっていませんか？</h1></header>\n<ul class=\"worry-list\"><li>血糖値ばかり追いかけて、毎日疲れている</li><li>夕方になると、甘いものが頭から離れない</li><li>夜ご飯を抜いているのに、朝の血糖値が高い</li></ul>\n<section class=\"intro-section\"><p>病院で「甘いものは控えて」「ご飯は最後に食べてね」と何度も言われてきたから。</p><p class=\"intro-highlight\">糖が悪いと思い込むのは、<br><mark>当然なんです。</mark></p><p>でも、体の中ではこんなことが起きています。</p>\n<ol class=\"cycle\"><li>糖を減らす</li><li>細胞の中がエネルギー不足<br>（細胞内飢餓）になる</li><li>体がストレスホルモンを出す</li><li>肝臓が自分で糖を作る<br>（糖新生）</li><li>食べていないのに<br>血糖値が上がる</li><li>「まだ足りない」と<br>さらに減らす</li></ol>\n<p>頑張れば頑張るほど、<br>抜け出せなくなる仕組みなのです。</p>\n<div class=\"intro-quote\"><p>「私は意志が弱いのかな」<br>「一生、薬を増やすしかないのかな」</p></div><p style=\"margin-top:22px\">誰にも言えずに、そう思っていませんか？</p></section>\n<section class=\"intro-section\"><h2>目指すのは、糖を減らす体じゃなく、<br><mark>糖を吸収できる体。</mark></h2><p>血液には糖があふれているのに、細胞の中はエネルギーが足りない状態が起きています。</p><p>必要なのは、糖を減らすことじゃなく、</p><p class=\"intro-highlight\">細胞がちゃんと糖を受け取って、<br>エネルギーに変えられる体に<br>戻すことです。</p></section>\n<section class=\"intro-section\"><h2>でも、その道すじは、<br><mark>人によって違います。</mark></h2><p>「エネルギーに変えられる体」へ戻る道すじは、人によって違います。</p>\n<div class=\"type-grid\"><div class=\"type-item\"><span class=\"type-dot\" aria-hidden=\"true\">01</span>糖をがまんしすぎて、<br><strong>ガス欠になっている人。</strong></div><div class=\"type-item\"><span class=\"type-dot\" aria-hidden=\"true\">02</span>血糖値が大きく<br><strong>上がったり下がったりしている人。</strong></div><div class=\"type-item\"><span class=\"type-dot\" aria-hidden=\"true\">03</span>体が冷えて、<br><strong>消化が疲れている人。</strong></div><div class=\"type-item\"><span class=\"type-dot\" aria-hidden=\"true\">04</span>健康のためにと、<br><strong>あれこれ足しすぎている人。</strong></div></div>\n<p>同じ「血糖値が高い」でも、体の中で起きていることはまったく違います。</p><p>だから最初にやることは、<br>頑張りを増やすことではありません。</p><p class=\"intro-highlight\"><mark>「自分の体が今どんな状態なのか」</mark><br>を知ることです。</p></section>\n<div class=\"intro-invite\"><span class=\"kicker\">8つの質問・約1分</span><h2>あなたの血糖タイプを<br>チェックしてみませんか？</h2><p>そこで、8つの質問に答えるだけで、あなたの血糖タイプが分かる診断を用意しました。</p><ul class=\"intro-perks\"><li>約1分で終わります</li><li>答えはどこにも送られません</li><li>タイプごとに、今日からできる<br>具体的な一歩が分かります</li></ul><p>「私の頑張り方は合っていたのかな？」<br>そう感じた方は、<br>まずここから試してみてください。</p><button type=\"button\" id=\"intro-start\" class=\"btn main\">自分の血糖タイプを調べる →</button></div>";
+ s.querySelector('#intro-start').onclick=begin;
  if(D.note)s.appendChild(el('p','note',D.note));
  show(s);
 }
@@ -213,3 +246,4 @@ var R0=direct();if(R0)result(R0);else start();
 </script>
 </body>
 </html>
+
